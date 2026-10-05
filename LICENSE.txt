@@ -1,32 +1,18 @@
-ENDBENUTZER-LIZENZVEREINBARUNG (EULA) / COMMERCIAL LICENSE AGREEMENT
+## 🔑 Lizenzierung & Freischaltung
 
-PRODUKT: Wichtelweg Kottenheim (Software)
-RECHTEINHABER: Gemeinsam fuer Kottenheim e.V. (im Folgenden "Lizenzgeber")
+> **100 % Kostenlos – Registrierung erforderlich**
 
-WICHTIG - BITTE SORGFALTIG LESEN:
-Durch das Installieren, Kopieren oder anderweitige Nutzen dieser Software erklaeren Sie sich mit den Bedingungen dieser Lizenzvereinbarung einverstanden. Wenn Sie diesen Bedingungen nicht zustimmen, duerfen Sie die Software nicht installieren oder nutzen.
+Die **Wichtelweg Software** wird als **Freeware** zur Verfügung gestellt. Es fallen **keine Kosten** für die Nutzung an!
 
-1. GEWAEHRUNG DER LIZENZ
-Der Lizenzgeber gewaehrt Ihnen eine einfache, nicht uebertragbare, nicht unterlizenzierbare und zeitlich auf die Gueltigkeit der Vereinbarung beschraenkte Einzelplatzlizenz zur Nutzung der Software auf Ihren eigenen Systemen fuer die vorgesehenen Vereins- und Verwaltungszwecke.
+Um die Software zu nutzen, wird lediglich ein kostenfreier Lizenzschlüssel benötigt. Dies dient der ordnungsgemäßen Registrierung und Verwaltung der Instanzen.
 
-2. EIGENTUMS- UND URHEBERRECHTE
-Die Software, einschliesslich aller Grafiken, Benutzeroberflaechen, Quellcodes, Datenbankstrukturen und Dokumentationen, ist urheberrechtlich geschuetzt. Alle Rechte, Titel und Eigentumsansprueche an und mit der Software verbleiben ausschliesslich beim Lizenzgeber.
+📧 **Kostenlosen Lizenzschlüssel anfordern:**  
+Schreibe einfach eine kurze E-Mail an **[lizenzierung@webwichtel.org](mailto:lizenzierung@webwichtel.org)** mit dem Namen deines Wichtelwegs.
 
-3. NUTZUNGSEINSCHRAENKUNGEN
-Es ist dem Lizenznehmer ausdruecklich untersagt:
-a) Die Software oder Teile davon zu vermieten, zu verleasen, zu verkaufen, zu unterlizenzieren oder kommerziell weiterzuvertreiben.
-b) Die Software zu dekompilieren, zu disassemblieren, per Reverse Engineering zu analysieren oder den Quellcode auf sonstige Weise zu rekonstruieren, soweit dies nicht gesetzlich zwingend erlaubt ist.
-c) Urheberrechtsvermerke, Markenzeichen oder sonstige Kennzeichnungen im Programm oder auf der Benutzeroberflaeche zu entfernen oder zu veraendern.
-d) Kopien der Software an Dritte weiterzugeben oder ueber ein oeffentliches Netz zugaenglich zu machen.
+---
 
-4. DATENSCHUTZ UND DATENVERARBEITUNG
-Die Software verarbeitet Daten lokal auf dem System des Nutzers. Der Lizenznehmer ist selbst dafuer verantwortlich, dass die Eingabe und Verarbeitung personenbezogener Daten den jeweils geltenden datenschutzrechtlichen Bestimmungen (z. B. DSGVO) entspricht.
+### 📜 Lizenzmodell auf einen Blick
 
-5. GEWAEHRLEISTUNG UND GARANTIEAUSSCHLUSS
-Die Software wird "WIE GESEHEN" ("AS IS") bereitgestellt. Der Lizenzgeber uebernimmt keine ausdrueckliche oder stillschweigende Garantie fuer die Fehlerfreiheit, Unterbrechungsfreiheit, Marktgaengigkeit oder Eignung fuer einen bestimmten Zweck.
-
-6. HAFTUNGSBESCHRAENKUNG
-In keinem Fall haftet der Lizenzgeber fuer indirekte, zufaellige, spezielle, Folgeschaeden oder entgangenen Gewinn, Datenverlust oder Betriebsunterbrechungen, die aus der Nutzung oder der Unmoeglichkeit der Nutzung dieser Software entstehen, selbst wenn auf die Moeglichkeit solcher Schaeden hingewiesen wurde.
-
-7. SCHLUSSBESTIMMUNGEN
-Sollte eine Bestimmung dieser Vereinbarung unwirksam sein oder werden, bleibt die Wirksamkeit der uebrigen Bestimmungen unberuehrt. Es gilt ausschliesslich das Recht der Bundesrepublik Deutschland.
+- **Kosten:** 0 € / Gratis
+- **Typ:** Proprietäre Freeware
+- **Bedingung:** Kostenlose Aktivierung per Lizenzschlüssel
