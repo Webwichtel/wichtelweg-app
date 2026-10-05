@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software-Aktivierung - Wichtelweg Kottenheim</title>
+    <style>
+        :root {
+            /* Farbschema: Gemeinsam für Kottenheim e.V. */
+            --brand-green-dark: #1b382b;
+            --brand-green-main: #2a5240;
+            --brand-green-light: #3d6e57;
+            --brand-orange: #e06d28;
+            --brand-orange-hover: #c85b1a;
+            
+            --bg-page: #f4f6f5;
+            --bg-surface: #ffffff;
+            --bg-stripe: #fafbfc;
+            
+            --text-dark: #1f2925;
+            --text-muted: #5c6b64;
+            --border-color: #d1dad5;
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-serif: 'Merriweather', Georgia, serif;
+
+            --error-bg: #fdf2f2;
+            --error-text: #9f2a2b;
+            --error-border: #f5c6cb;
+
+            --titlebar-height: 38px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --------------------------------------------------
+           EIGENE WINDOWS-FENSTERLEISTE (TITLEBAR)
+        -------------------------------------------------- */
+        .titlebar {
+            height: var(--titlebar-height);
+            background-color: var(--brand-green-dark);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 14px;
+            /* Ermöglicht das Verschieben des Fensters per Drag & Drop */
+            -webkit-app-region: drag;
+            border-bottom: 2px solid var(--brand-orange);
+            flex-shrink: 0;
+        }
+
+        .titlebar-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        .titlebar-controls {
+            display: flex;
+            height: 100%;
+            -webkit-app-region: no-drag;
+        }
+
+        .control-btn {
+            width: 44px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            box-shadow: none;
+            border-radius: 0;
+            padding: 0;
+            -webkit-app-region: no-drag;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            box-shadow: none;
+        }
+
+        .control-btn.close-btn:hover {
+            background-color: #c93b2b;
+        }
+
+        .control-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* --------------------------------------------------
+           HAUPTINHALT / CONTAINER
+        -------------------------------------------------- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--brand-orange);
+            border-radius: 8px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(27, 56, 43, 0.08);
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            background-color: var(--brand-green-dark);
+            color: var(--brand-orange);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(27, 56, 43, 0.15);
+        }
+
+        .brand-badge svg {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--brand-green-main);
+            margin-bottom: 4px;
+        }
+
+        h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-green-dark);
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            -webkit-app-region: no-drag;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-stripe);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 2px;
+            outline: none;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        input::placeholder {
+            color: #a0aca6;
+            letter-spacing: 1px;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            border-color: var(--brand-green-main);
+            box-shadow: 0 0 0 3px rgba(42, 82, 64, 0.15);
+            background: #ffffff;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--brand-orange);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(224, 109, 40, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-app-region: no-drag;
+        }
+
+        .action-btn:hover {
+            background-color: var(--brand-orange-hover);
+            box-shadow: 0 6px 16px rgba(224, 109, 40, 0.35);
+        }
+
+        .action-btn:active {
+            transform: translateY(1px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-border);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            margin-top: 18px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Eigene Fensterleiste im Kottenheim-Design -->
+    <div class="titlebar">
+        <div class="titlebar-title">
+            <span>Wichtelweg Kottenheim</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="control-btn" id="minBtn" title="Minimieren" onclick="windowControl('minimize')">
+                <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button class="control-btn" id="maxBtn" title="Maximieren / Wiederherstellen" onclick="windowControl('maximize')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+            </button>
+            <button class="control-btn close-btn" id="closeBtn" title="Schließen" onclick="windowControl('close')">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Hauptinhalt -->
+    <div class="main-container">
+        <div class="card">
+            <div class="brand-badge">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+
+            <div class="brand-subtitle">Gemeinsam für Kottenheim e.V.</div>
+            <h2>Software-Aktivierung</h2>
+            <p>Bitte gib deinen Lizenzschlüssel ein, um die Anwendung freizuschalten.</p>
+
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="licenseKey" 
+                    placeholder="XXXX-XXXX-XXXX-XXXX" 
+                    maxlength="19" 
+                    autocomplete="off" 
+                    spellcheck="false"
+                />
+            </div>
+
+            <button id="submitBtn" class="action-btn" onclick="activateLicense()">
+                <span class="spinner" id="btnSpinner"></span>
+                <span id="btnText">Jetzt aktivieren</span>
+            </button>
+
+            <div id="errorMessage" class="alert"></div>
+        </div>
+    </div>
+
+    <script>
+    const { ipcRenderer } = require('electron');
+
+    // DOM-Elemente
+    const keyInput = document.getElementById('licenseKey');
+    const errorDiv = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnText = document.getElementById('btnText');
+
+    // Fenster-Aktionen senden (Minimieren, Maximieren, Schließen)
+    function windowControl(action) {
+        ipcRenderer.send('window-control', action);
+    }
+
+    // Key-Formatierung (automatisches Einfügen von Bindestrichen)
+    keyInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        let formatted = '';
+        for (let i = 0; i < val.length && i < 16; i++) {
+            if (i > 0 && i % 4 === 0) formatted += '-';
+            formatted += val[i];
+        }
+        e.target.value = formatted;
+        errorDiv.style.display = 'none';
+    });
+
+    // Aktivierung per Enter-Taste auslösen
+    keyInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') activateLicense();
+    });
+
+    // Lizenz prüfen und speichern
+    async function activateLicense() {
+        const key = keyInput.value.trim();
+        if (!key) {
+            showError('Bitte gib einen Lizenzschlüssel ein.');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const res = await ipcRenderer.invoke('verify-and-save-license', key);
+            if (res.success) {
+                window.location.href = 'index.html';
+            } else {
+                showError(res.message || 'Ungültiger Lizenzschlüssel!');
+                setLoading(false);
+            }
+        } catch (err) {
+            showError('Ein unerwarteter Fehler ist aufgetreten.');
+            setLoading(false);
+        }
+    }
+
+    // Fehlermeldung anzeigen
+    function showError(msg) {
+        errorDiv.innerText = msg;
+        errorDiv.style.display = 'block';
+    }
+
+    // Lade-Zustand für Button umschalten
+    function setLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        keyInput.disabled = isLoading;
+        if (isLoading) {
+            btnSpinner.style.display = 'inline-block';
+            btnText.innerText = 'Prüfe Lizenz...';
+        } else {
+            btnSpinner.style.display = 'none';
+            btnText.innerText = 'Jetzt aktivieren';
+        }
+    }
+    </script>
+</body>
+</html>

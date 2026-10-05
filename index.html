@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wichtelweg #inKottem – Vereinsportal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Farbschema: Gemeinsam für Kottenheim e.V. */
+            --brand-green-dark: #1b382b;
+            --brand-green-main: #2a5240;
+            --brand-green-light: #3d6e57;
+            --brand-orange: #e06d28;
+            --brand-orange-hover: #c85b1a;
+            
+            --bg-page: #f4f6f5;
+            --bg-surface: #ffffff;
+            --bg-stripe: #fafbfc;
+            
+            --text-dark: #1f2925;
+            --text-muted: #5c6b64;
+            --border-color: #d1dad5;
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-serif: 'Merriweather', Georgia, serif;
+
+            --titlebar-height: 38px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --------------------------------------------------
+           EIGENE WINDOWS-FENSTERLEISTE (TITLEBAR)
+        -------------------------------------------------- */
+        .titlebar {
+            height: var(--titlebar-height);
+            background-color: var(--brand-green-dark);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 14px;
+            /* Ermöglicht das Verschieben des Fensters per Drag & Drop */
+            -webkit-app-region: drag;
+            border-bottom: 2px solid var(--brand-orange);
+            flex-shrink: 0;
+        }
+
+        .titlebar-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        .titlebar-controls {
+            display: flex;
+            height: 100%;
+            /* Buttons dürfen nicht ziehbar sein */
+            -webkit-app-region: no-drag;
+        }
+
+        .control-btn {
+            width: 44px;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            box-shadow: none;
+            border-radius: 0;
+            padding: 0;
+            -webkit-app-region: no-drag;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            box-shadow: none;
+        }
+
+        .control-btn.close-btn:hover {
+            background-color: #c93b2b;
+        }
+
+        .control-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--brand-green-dark);
+            color: #ffffff;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--brand-green-light);
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo-badge {
+            width: 38px;
+            height: 38px;
+            background-color: var(--brand-orange);
+            color: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .brand-title h1 {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .brand-title p {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 32px;
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            padding: 14px 18px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            -webkit-app-region: no-drag;
+        }
+
+        .nav-button:hover {
+            color: var(--brand-green-main);
+        }
+
+        .nav-button.active {
+            color: var(--brand-green-main);
+            border-bottom-color: var(--brand-orange);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 24px auto;
+            padding: 0 32px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Layout für Stationen */
+        .stations-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Stationen Liste (Links) */
+        .stations-sidebar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            background: var(--brand-green-dark);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            font-family: var(--font-serif);
+            font-size: 0.95rem;
+        }
+
+        .btn-add-station {
+            background-color: var(--brand-orange);
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .btn-add-station:hover {
+            background-color: var(--brand-orange-hover);
+        }
+
+        .station-list {
+            list-style: none;
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+
+        .station-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            -webkit-app-region: no-drag;
+        }
+
+        .station-item:last-child {
+            border-bottom: none;
+        }
+
+        .station-item:hover {
+            background-color: var(--bg-stripe);
+        }
+
+        .station-item.active {
+            background-color: #eef3f0;
+            border-left: 4px solid var(--brand-orange);
+            padding-left: 12px;
+        }
+
+        .station-item-number {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--brand-green-dark);
+            background: rgba(42, 82, 64, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .station-item-title {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Detailseite für Station (Rechts) */
+        .station-detail-page {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 32px;
+            min-height: 550px;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--bg-page);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .detail-badge {
+            display: inline-block;
+            background-color: var(--brand-green-dark);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .detail-title {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--brand-green-dark);
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .detail-content-block {
+            margin-bottom: 32px;
+        }
+
+        .block-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .detail-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-stripe);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            white-space: pre-wrap;
+            user-select: text;
+        }
+
+        /* Galerie */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-page);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Formularansicht */
+        .form-container {
+            max-width: 650px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            -webkit-app-region: no-drag;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--brand-green-dark);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background-color: var(--bg-stripe);
+            color: var(--text-dark);
+            outline: none;
+            user-select: text;
+        }
+
+        .form-input:focus {
+            border-color: var(--brand-green-main);
+            background-color: #ffffff;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-orange);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-orange-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--brand-green-main);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--brand-green-dark);
+        }
+
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-stripe);
+        }
+
+        .btn-delete {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-app-region: no-drag;
+        }
+
+        .btn-delete:hover {
+            color: #d9534f;
+            background: #fdf2f2;
+            border-color: #f5c6cb;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+            -webkit-app-region: no-drag;
+        }
+
+        /* Teilnehmer Layout */
+        .teilnehmer-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .table-section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            user-select: text;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .data-table th {
+            background-color: var(--brand-green-dark);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            user-select: none;
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--bg-stripe);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #eef3f0;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .contact-subtext {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        /* Import Modal Overlay & Container */
+.import-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.import-modal-content {
+  background: var(--bg-surface, #ffffff);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+}
+
+/* Formular & Select Highlights */
+select.form-input {
+  cursor: pointer;
+  appearance: auto;
+}
+
+select.form-input.is-mapped {
+  border-color: var(--brand-green-main);
+  background-color: #eef3f0;
+  font-weight: 600;
+}
+
+.btn-primary:disabled {
+  background-color: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Eigene Fensterleiste im Kottenheim-Design -->
+    <div class="titlebar">
+        <div class="titlebar-title">
+            <span>Wichtelweg Kottenheim</span>
+        </div>
+        <div class="titlebar-controls">
+            <button class="control-btn" id="minBtn" title="Minimieren" onclick="windowControl('minimize')">
+                <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button class="control-btn" id="maxBtn" title="Maximieren / Wiederherstellen" onclick="windowControl('maximize')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+            </button>
+            <button class="control-btn close-btn" id="closeBtn" title="Schließen" onclick="windowControl('close')">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="brand-section">
+            <div class="brand-logo-badge">W</div>
+            <div class="brand-title">
+                <h1>Wichtelweg #inKottem</h1>
+                <p>gemeinsam für kottenheim e.V.</p>
+            </div>
+        </div>
+     <!-- 1. DER BUTTON IN DEINER HAUPTANSICHT -->
+<button class="btn-primary" onclick="openImportModal()">
+  📊 Excel Importieren
+</button>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <button class="nav-button active" onclick="switchTab('tabStationen', this)">Stationen-Verzeichnis</button>
+        <button class="nav-button" onclick="switchTab('tabTeilnehmer', this)">Teilnehmer-Anmeldungen</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- TAB 1: STATIONEN -->
+        <div id="tabStationen" class="tab-panel active">
+            <div class="stations-layout">
+                
+                <aside class="stations-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Stationen</h3>
+                        <button class="btn-add-station" onclick="showStationForm()">+ Neu</button>
+                    </div>
+                    <ul class="station-list" id="stationList"></ul>
+                </aside>
+
+                <section class="station-detail-page" id="stationDetailPage"></section>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: TEILNEHMER -->
+        <div id="tabTeilnehmer" class="tab-panel">
+            <div class="teilnehmer-layout">
+                
+                <section class="station-detail-page" style="min-height: auto; padding: 24px;">
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                        <h2 id="teilnehmerFormTitle" style="font-family: var(--font-serif); font-size: 1.1rem; color: var(--brand-green-dark);">Teilnehmer anmelden</h2>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Anmeldedaten erfassen oder ändern</p>
+                    </div>
+                    
+                    <form id="formTeilnehmer" onsubmit="saveTeilnehmer(event)">
+                        <input type="hidden" id="tId" value="">
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="tName">Name / Familie</label>
+                            <input type="text" id="tName" class="form-input" placeholder="z. B. Familie Müller" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tHandy">Handynummer</label>
+                            <input type="tel" id="tHandy" class="form-input" placeholder="0170 1234567" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tEmail">E-Mail-Adresse</label>
+                            <input type="email" id="tEmail" class="form-input" placeholder="kontakt@beispiel.de" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tKinder">Anzahl Kinder</label>
+                            <input type="number" id="tKinder" class="form-input" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tWunsch">Grundstückswunsch</label>
+                            <textarea id="tWunsch" class="form-input" style="min-height: 80px;" placeholder="z. B. Bevorzugt Kirchstraße / Ecke Schulstraße..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" id="btnTeilnehmerSubmit" class="btn-primary" style="flex: 1;">Anmeldung speichern</button>
+                            <button type="button" id="btnTeilnehmerCancel" class="btn-outline" onclick="resetTeilnehmerForm()" style="display: none;">Abbrechen</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="table-section">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name / Familie</th>
+                                <th>Kontaktdaten</th>
+                                <th>Kinder</th>
+                                <th>Grundstückswunsch</th>
+                                <th style="width: 140px; text-align: right;">Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyTeilnehmer"></tbody>
+                    </table>
+                </section>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        let stationenCache = [];
+        let teilnehmerCache = [];
+        let activeStationId = null;
+
+        // Fenster-Aktionen senden (Minimieren, Maximieren, Schließen)
+        function windowControl(action) {
+            ipcRenderer.send('window-control', action);
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Hilfsfunktion gegen XSS / HTML-Breaking
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        /* --- STATIONEN LOGIK --- */
+        async function loadStationen() {
+            stationenCache = await ipcRenderer.invoke('get-stationen') || [];
+            renderSidebar();
+
+            if (stationenCache.length > 0) {
+                const targetId = activeStationId && stationenCache.some(s => s.id === activeStationId) 
+                    ? activeStationId 
+                    : stationenCache[0].id;
+                selectStation(targetId);
+            } else {
+                showStationForm();
+            }
+        }
+
+        function renderSidebar() {
+            const listEl = document.getElementById('stationList');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            if (stationenCache.length === 0) {
+                listEl.innerHTML = '<li style="padding: 16px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">Keine Stationen vorhanden.</li>';
+                return;
+            }
+
+            stationenCache.forEach(s => {
+                const li = document.createElement('li');
+                li.className = `station-item ${s.id === activeStationId ? 'active' : ''}`;
+                li.onclick = () => selectStation(s.id);
+                li.innerHTML = `
+                    <span class="station-item-number">Haus ${escapeHtml(s.hausnummer)}</span>
+                    <span class="station-item-title">${escapeHtml(s.name)}</span>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        function selectStation(id) {
+            activeStationId = id;
+            renderSidebar();
+
+            const station = stationenCache.find(s => s.id === id);
+            if (!station) return;
+
+            const detailEl = document.getElementById('stationDetailPage');
+            if (!detailEl) return;
+
+            let bilderArray = [];
+            try {
+                bilderArray = JSON.parse(station.bild_url);
+            } catch(e) {
+                if (station.bild_url) bilderArray = [station.bild_url];
+            }
+
+            let galleryHtml = '';
+            if (Array.isArray(bilderArray) && bilderArray.length > 0) {
+                galleryHtml = `
+                    <div class="detail-content-block">
+                        <div class="block-label">Fotos & Aufnahmen (${bilderArray.length})</div>
+                        <div class="gallery-grid">
+                            ${bilderArray.map(url => `
+                                <div class="gallery-item">
+                                    <img src="${url}" alt="Foto Station ${escapeHtml(station.hausnummer)}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                galleryHtml = `
+                    <div class="detail-content-block">
+                        <div class="block-label">Fotos & Aufnahmen</div>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); font-style: italic;">Keine Fotos für diese Station hinterlegt.</p>
+                    </div>
+                `;
+            }
+
+            detailEl.innerHTML = `
+                <div class="detail-header">
+                    <div>
+                        <span class="detail-badge">Hausnummer ${escapeHtml(station.hausnummer)}</span>
+                        <h2 class="detail-title">${escapeHtml(station.name)}</h2>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="btn-secondary" onclick="showStationForm(${station.id})">Station bearbeiten</button>
+                        <button class="btn-delete" onclick="deleteStation(${station.id})">Löschen</button>
+                    </div>
+                </div>
+
+                <div class="detail-content-block">
+                    <div class="block-label">Beschreibung & Details</div>
+                    <div class="detail-description">${escapeHtml(station.beschreibung) || 'Keine Beschreibung vorhanden.'}</div>
+                </div>
+
+                ${galleryHtml}
+            `;
+        }
+
+        function showStationForm(editId = null) {
+            const station = editId ? stationenCache.find(s => s.id === editId) : null;
+            if (!editId) activeStationId = null;
+            renderSidebar();
+
+            const isEdit = !!station;
+            const detailEl = document.getElementById('stationDetailPage');
+            if (!detailEl) return;
+
+            detailEl.innerHTML = `
+                <div class="form-container">
+                    <div class="detail-header" style="margin-bottom: 20px; padding-bottom: 12px;">
+                        <h2 class="detail-title" style="font-size: 1.4rem;">${isEdit ? 'Station bearbeiten' : 'Neue Station erfassen'}</h2>
+                    </div>
+                    <form id="formStation" onsubmit="saveStation(event, ${isEdit ? station.id : 'null'})">
+                        <div class="form-group">
+                            <label class="form-label" for="hausnummer">Hausnummer</label>
+                            <input type="number" id="hausnummer" class="form-input" value="${isEdit ? escapeHtml(station.hausnummer) : ''}" placeholder="z. B. 12" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="stationName">Stationsname</label>
+                            <input type="text" id="stationName" class="form-input" value="${isEdit ? escapeHtml(station.name) : ''}" placeholder="z. B. Waldwichtel-Werkstatt" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="beschreibung">Beschreibung / Ausführlicher Text</label>
+                            <textarea id="beschreibung" class="form-input" placeholder="Genaue Beschreibung der Station, Aktionen, Wichtel-Details...">${isEdit ? escapeHtml(station.beschreibung) : ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="bildDateien">Fotos ${isEdit ? 'ergänzen / ersetzen' : 'hochladen'} (Mehrfachauswahl möglich)</label>
+                            <input type="file" id="bildDateien" class="form-input" accept="image/*" multiple>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">${isEdit ? 'Änderungen speichern' : 'Station speichern'}</button>
+                            ${isEdit ? `<button type="button" class="btn-outline" onclick="selectStation(${station.id})">Abbrechen</button>` : ''}
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        async function saveStation(e, editId) {
+            e.preventDefault();
+            const hausnummer = document.getElementById('hausnummer').value;
+            const name = document.getElementById('stationName').value;
+            const beschreibung = document.getElementById('beschreibung').value;
+            const bildInput = document.getElementById('bildDateien');
+
+            let bilderArray = [];
+
+            if (editId) {
+                const existingStation = stationenCache.find(s => s.id === editId);
+                if (existingStation && existingStation.bild_url) {
+                    try {
+                        bilderArray = JSON.parse(existingStation.bild_url);
+                    } catch(err) {
+                        if (existingStation.bild_url) bilderArray = [existingStation.bild_url];
+                    }
+                }
+            }
+
+            if (bildInput && bildInput.files.length > 0) {
+                for (let i = 0; i < bildInput.files.length; i++) {
+                    const file = bildInput.files[i];
+                    const base64 = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    bilderArray.push(base64);
+                }
+            }
+
+            const bild_url = JSON.stringify(bilderArray);
+
+            if (editId) {
+                await ipcRenderer.invoke('update-station', { id: editId, hausnummer, name, beschreibung, bild_url });
+                activeStationId = editId;
+            } else {
+                activeStationId = await ipcRenderer.invoke('add-station', { hausnummer, name, beschreibung, bild_url });
+            }
+
+            await loadStationen();
+        }
+
+        async function deleteStation(id) {
+            if (confirm('Möchtest du diese Station wirklich löschen?')) {
+                await ipcRenderer.invoke('delete-station', id);
+                activeStationId = null;
+                loadStationen();
+            }
+        }
+
+        /* --- TEILNEHMER LOGIK --- */
+        async function loadTeilnehmer() {
+            teilnehmerCache = await ipcRenderer.invoke('get-teilnehmer') || [];
+            const tbody = document.getElementById('tbodyTeilnehmer');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (teilnehmerCache.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--text-muted); font-style:italic;">Keine Anmeldungen vorhanden.</td></tr>';
+                return;
+            }
+
+            teilnehmerCache.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(t.name)}</strong></td>
+                    <td>
+                        <div class="contact-info">
+                            <span>📞 ${escapeHtml(t.handy) || '-'}</span>
+                            <span class="contact-subtext">✉️ ${escapeHtml(t.email)}</span>
+                        </div>
+                    </td>
+                    <td>${escapeHtml(t.anzahl_kinder)} Kind(er)</td>
+                    <td>${escapeHtml(t.grundstueckswunsch) || '-'}</td>
+                    <td>
+                        <div class="action-cell">
+                            <button class="btn-outline" style="padding: 4px 8px; font-size: 0.75rem;" onclick="editTeilnehmer(${t.id})">Bearbeiten</button>
+                            <button class="btn-delete" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteTeilnehmer(${t.id})">Löschen</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function editTeilnehmer(id) {
+            const t = teilnehmerCache.find(item => item.id === id);
+            if (!t) return;
+
+            document.getElementById('tId').value = t.id;
+            document.getElementById('tName').value = t.name;
+            document.getElementById('tHandy').value = t.handy || '';
+            document.getElementById('tEmail').value = t.email;
+            document.getElementById('tKinder').value = t.anzahl_kinder;
+            document.getElementById('tWunsch').value = t.grundstueckswunsch || '';
+
+            document.getElementById('teilnehmerFormTitle').innerText = 'Teilnehmer bearbeiten';
+            document.getElementById('btnTeilnehmerSubmit').innerText = 'Änderungen speichern';
+            document.getElementById('btnTeilnehmerCancel').style.display = 'inline-block';
+        }
+
+        function resetTeilnehmerForm() {
+            const form = document.getElementById('formTeilnehmer');
+            if (form) form.reset();
+            document.getElementById('tId').value = '';
+            document.getElementById('teilnehmerFormTitle').innerText = 'Teilnehmer anmelden';
+            document.getElementById('btnTeilnehmerSubmit').innerText = 'Anmeldung speichern';
+            document.getElementById('btnTeilnehmerCancel').style.display = 'none';
+        }
+
+        async function saveTeilnehmer(e) {
+            e.preventDefault();
+            const id = document.getElementById('tId').value;
+            const name = document.getElementById('tName').value;
+            const handy = document.getElementById('tHandy').value;
+            const email = document.getElementById('tEmail').value;
+            const anzahl_kinder = document.getElementById('tKinder').value;
+            const grundstueckswunsch = document.getElementById('tWunsch').value;
+
+            if (id) {
+                await ipcRenderer.invoke('update-teilnehmer', { id: parseInt(id), name, handy, email, anzahl_kinder, grundstueckswunsch });
+            } else {
+                await ipcRenderer.invoke('add-teilnehmer', { name, handy, email, anzahl_kinder, grundstueckswunsch });
+            }
+
+            resetTeilnehmerForm();
+            loadTeilnehmer();
+        }
+
+        async function deleteTeilnehmer(id) {
+            if (confirm('Teilnehmer wirklich löschen?')) {
+                await ipcRenderer.invoke('delete-teilnehmer', id);
+                loadTeilnehmer();
+            }
+        }
+
+        // Event-Listener nach dem Laden der Seite registrieren
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStationen();
+            loadTeilnehmer();
+        });
+
+
+        // Falls XLSX über node require geladen werden soll:
+  const XLSX = require('xlsx');
+
+  let excelRawData = [];
+
+  function openImportModal() {
+    resetImport();
+    document.getElementById('importModal').style.display = 'flex';
+  }
+
+  function closeImportModal() {
+    document.getElementById('importModal').style.display = 'none';
+    resetImport();
+  }
+
+  document.getElementById('excelFileInput').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+      excelRawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      if (excelRawData.length > 0) {
+        populateColumnSelects(excelRawData[0]);
+        document.getElementById('uploadZone').style.display = 'none';
+        document.getElementById('mappingSection').style.display = 'block';
+        checkMappingValidity();
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+
+  function populateColumnSelects(headers) {
+    const selects = document.querySelectorAll('.column-select');
+    selects.forEach((select) => {
+      select.innerHTML = '<option value="">-- Nicht importieren --</option>';
+      headers.forEach((header, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = header || `Spalte ${index + 1}`;
+        select.appendChild(option);
+      });
+    });
+  }
+
+  function checkMappingValidity() {
+    const selects = document.querySelectorAll('.column-select');
+    selects.forEach(select => {
+      select.classList.toggle('is-mapped', select.value !== "");
+    });
+
+    const nameIdx = document.getElementById('mapName').value;
+    document.getElementById('startImportBtn').disabled = (nameIdx === "");
+
+    renderPreview();
+  }
+
+  function renderPreview() {
+    const nameIdx = document.getElementById('mapName').value;
+    const adresseIdx = document.getElementById('mapAdresse').value;
+    const emailIdx = document.getElementById('mapEmail').value;
+    const telefonIdx = document.getElementById('mapTelefon').value;
+    const kinderIdx = document.getElementById('mapKinder').value;
+    const grundstueckIdx = document.getElementById('mapGrundstueck').value;
+
+    const previewBody = document.getElementById('previewBody');
+    previewBody.innerHTML = '';
+
+    const sampleRows = excelRawData.slice(1, 4);
+
+    sampleRows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${nameIdx !== '' ? (row[nameIdx] || '-') : '-'}</strong></td>
+        <td>${adresseIdx !== '' ? (row[adresseIdx] || '-') : '-'}</td>
+        <td class="contact-subtext">${emailIdx !== '' ? (row[emailIdx] || '-') : '-'}</td>
+        <td>${telefonIdx !== '' ? (row[telefonIdx] || '-') : '-'}</td>
+        <td>${kinderIdx !== '' ? (row[kinderIdx] || '-') : '-'}</td>
+        <td>${grundstueckIdx !== '' ? (row[grundstueckIdx] || '-') : '-'}</td>
+      `;
+      previewBody.appendChild(tr);
+    });
+  }
+
+  function resetImport() {
+    document.getElementById('excelFileInput').value = '';
+    document.getElementById('uploadZone').style.display = 'block';
+    document.getElementById('mappingSection').style.display = 'none';
+    excelRawData = [];
+  }
+
+  function executeImport() {
+    const nameIdx = document.getElementById('mapName').value;
+    const adresseIdx = document.getElementById('mapAdresse').value;
+    const emailIdx = document.getElementById('mapEmail').value;
+    const telefonIdx = document.getElementById('mapTelefon').value;
+    const kinderIdx = document.getElementById('mapKinder').value;
+    const grundstueckIdx = document.getElementById('mapGrundstueck').value;
+
+    const importedData = excelRawData.slice(1).map(row => ({
+      name: nameIdx !== '' ? row[nameIdx] : '',
+      adresse: adresseIdx !== '' ? row[adresseIdx] : '',
+      email: emailIdx !== '' ? row[emailIdx] : '',
+      telefon: telefonIdx !== '' ? row[telefonIdx] : '',
+      kinder: kinderIdx !== '' ? row[kinderIdx] : '',
+      grundstueckswunsch: grundstueckIdx !== '' ? row[grundstueckIdx] : ''
+    })).filter(item => item.name);
+
+    console.log('Importierte Daten:', importedData);
+    
+    // Hier werden die Daten verarbeitet (z.B. in dein Array / Speicher gepusht)
+    
+    closeImportModal();
+  }
+    </script>
+
+ <!-- IMPORT MODAL DIALOG -->
+<div id="importModal" class="import-modal-overlay" style="display: none !important;">
+  <div class="import-modal-content station-detail-page">
+    
+    <div class="detail-header">
+      <div>
+        <span class="detail-badge">Excel Import</span>
+        <h2 class="detail-title">Teilnehmer-Spalten zuordnen</h2>
+      </div>
+      <div class="detail-actions">
+        <button class="btn-outline" type="button" onclick="closeImportModal()">Abbrechen</button>
+        <button class="btn-primary" id="startImportBtn" type="button" disabled onclick="executeImport()">Import durchführen</button>
+      </div>
+    </div>
+
+    <!-- Schritt 1: Upload Zone -->
+    <div class="form-group" id="uploadZone" style="cursor: pointer;" onclick="document.getElementById('excelFileInput').click()">
+      <div class="detail-description" style="text-align: center; border-style: dashed; padding: 36px 20px;">
+        <div style="font-size: 1.5rem; margin-bottom: 8px;">📊</div>
+        <div style="font-weight: 700; color: var(--brand-green-dark); margin-bottom: 4px;">
+          Excel- oder CSV-Datei auswählen
+        </div>
+        <div class="contact-subtext">Klicke hier um eine .xlsx / .csv Datei auszuwählen</div>
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;" />
+      </div>
+    </div>
+
+    <!-- Schritt 2: Mapping Formular -->
+    <div id="mappingSection" style="display: none;">
+      <div class="detail-content-block">
+        <div class="block-label">Zuordnung der Spalten</div>
+        <p class="contact-subtext" style="margin-bottom: 16px;">
+          Wähle aus, welche Spalte deiner Datei den Feldern in der Anwendung entspricht.
+        </p>
+
+        <div class="form-container">
+          <div class="form-group">
+            <label class="form-label" for="mapName">Name / Vollständiger Name *</label>
+            <select id="mapName" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mapAdresse">Adresse / Ort</label>
+            <select id="mapAdresse" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mapEmail">E-Mail-Adresse</label>
+            <select id="mapEmail" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mapTelefon">Telefonnummer</label>
+            <select id="mapTelefon" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mapKinder">Anzahl Kinder</label>
+            <select id="mapKinder" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mapGrundstueck">Grundstückswunsch</label>
+            <select id="mapGrundstueck" class="form-input column-select" onchange="checkMappingValidity()"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schritt 3: Vorschau-Tabelle -->
+      <div class="detail-content-block">
+        <div class="block-label">Vorschau (Erste 3 Datensätze)</div>
+        <div class="table-section" style="margin-top: 8px; overflow-x: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Adresse</th>
+                <th>E-Mail</th>
+                <th>Telefon</th>
+                <th>Kinder</th>
+                <th>Wunsch</th>
+              </tr>
+            </thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
